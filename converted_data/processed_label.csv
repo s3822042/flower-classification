@@ -2064,7 +2064,6 @@ patientid,imagename,celltypename,celltype,iscancerous
 12,15803.png,inflammatory,1,0
 12,15804.png,inflammatory,1,0
 12,15805.png,inflammatory,1,0
-12,15806.png,inflammatory,1,0
 12,15807.png,inflammatory,1,0
 12,15808.png,inflammatory,1,0
 12,15809.png,inflammatory,1,0
@@ -2091,7 +2090,6 @@ patientid,imagename,celltypename,celltype,iscancerous
 12,15832.png,inflammatory,1,0
 12,15834.png,inflammatory,1,0
 12,15836.png,inflammatory,1,0
-12,15837.png,inflammatory,1,0
 12,15838.png,inflammatory,1,0
 12,15839.png,inflammatory,1,0
 12,15840.png,inflammatory,1,0
@@ -2599,7 +2597,6 @@ patientid,imagename,celltypename,celltype,iscancerous
 15,17576.png,inflammatory,1,0
 15,17577.png,inflammatory,1,0
 15,17578.png,inflammatory,1,0
-15,17579.png,inflammatory,1,0
 15,17580.png,inflammatory,1,0
 15,17581.png,inflammatory,1,0
 15,17582.png,inflammatory,1,0
@@ -4754,7 +4751,6 @@ patientid,imagename,celltypename,celltype,iscancerous
 25,17360.png,others,3,0
 25,17361.png,others,3,0
 25,17362.png,others,3,0
-25,17363.png,others,3,0
 25,17364.png,others,3,0
 25,17365.png,others,3,0
 25,17366.png,others,3,0
@@ -5068,7 +5064,6 @@ patientid,imagename,celltypename,celltype,iscancerous
 29,16915.png,inflammatory,1,0
 29,16916.png,inflammatory,1,0
 29,16917.png,inflammatory,1,0
-29,16918.png,inflammatory,1,0
 29,16919.png,inflammatory,1,0
 29,16920.png,inflammatory,1,0
 29,16921.png,inflammatory,1,0
@@ -5295,7 +5290,6 @@ patientid,imagename,celltypename,celltype,iscancerous
 29,17154.png,inflammatory,1,0
 29,17155.png,inflammatory,1,0
 29,17156.png,inflammatory,1,0
-29,17157.png,inflammatory,1,0
 29,17158.png,inflammatory,1,0
 29,17159.png,inflammatory,1,0
 29,17160.png,inflammatory,1,0
@@ -5312,7 +5306,6 @@ patientid,imagename,celltypename,celltype,iscancerous
 29,17171.png,inflammatory,1,0
 29,17172.png,inflammatory,1,0
 29,17173.png,inflammatory,1,0
-29,17174.png,inflammatory,1,0
 29,17175.png,inflammatory,1,0
 29,17176.png,inflammatory,1,0
 29,17177.png,inflammatory,1,0
@@ -5327,7 +5320,6 @@ patientid,imagename,celltypename,celltype,iscancerous
 29,17186.png,inflammatory,1,0
 29,17187.png,inflammatory,1,0
 29,17188.png,inflammatory,1,0
-29,17189.png,inflammatory,1,0
 29,17190.png,inflammatory,1,0
 29,17191.png,inflammatory,1,0
 29,17192.png,inflammatory,1,0
@@ -7364,7 +7356,6 @@ patientid,imagename,celltypename,celltype,iscancerous
 47,1369.png,inflammatory,1,0
 47,1370.png,inflammatory,1,0
 47,1371.png,inflammatory,1,0
-47,1372.png,inflammatory,1,0
 47,1373.png,inflammatory,1,0
 47,1374.png,inflammatory,1,0
 47,1375.png,inflammatory,1,0
@@ -8505,7 +8496,6 @@ patientid,imagename,celltypename,celltype,iscancerous
 53,13236.png,fibroblast,0,0
 53,13237.png,fibroblast,0,0
 53,13238.png,fibroblast,0,0
-53,13239.png,fibroblast,0,0
 53,13240.png,fibroblast,0,0
 53,13241.png,fibroblast,0,0
 53,13242.png,fibroblast,0,0
@@ -8610,7 +8600,6 @@ patientid,imagename,celltypename,celltype,iscancerous
 53,13346.png,epithelial,2,1
 53,13347.png,epithelial,2,1
 53,13348.png,epithelial,2,1
-53,13349.png,epithelial,2,1
 54,13673.png,fibroblast,0,0
 54,13674.png,fibroblast,0,0
 54,13675.png,inflammatory,1,0
@@ -8767,7 +8756,6 @@ patientid,imagename,celltypename,celltype,iscancerous
 54,13846.png,others,3,0
 54,13848.png,others,3,0
 54,13849.png,others,3,0
-54,13850.png,others,3,0
 54,13851.png,others,3,0
 54,13852.png,others,3,0
 54,13853.png,others,3,0
