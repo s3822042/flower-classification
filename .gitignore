@@ -2,3 +2,5 @@
 .DS_store
 
 myenv
+
+data/downscaled_images
