@@ -4,3 +4,5 @@
 myenv
 
 data/downscaled_images
+
+webapp/__pycache__
