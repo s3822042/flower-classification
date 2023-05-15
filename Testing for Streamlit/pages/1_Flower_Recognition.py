@@ -127,6 +127,10 @@ div.css-10ix4kq {{
     color: white;
 }}
 
+small.css-laehpvj{{
+    color: white;
+}}
+
 /*text color*/
 p{{
   color: white;
