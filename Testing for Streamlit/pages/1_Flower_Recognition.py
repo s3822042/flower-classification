@@ -4,13 +4,16 @@ import numpy as np
 import joblib
 import base64
 from io import BytesIO
+import plotly.express as px
+import base64
+import os
+import random
 
 st.set_page_config(page_title="Flower Recognition", page_icon=":bouquet:")
+st.markdown('<link href="styles.css" rel="stylesheet">', unsafe_allow_html=True)
+
 
 st.markdown("# Flower Recognition")
-
-# Create a file uploader component in Streamlit that accepts only one image file
-uploaded_file = st.file_uploader("Choose your file...", type=["jpg", "jpeg"])
 
 # Load the pre-trained model
 model = joblib.load('ResNet50V2_model_final.joblib')
@@ -29,6 +32,9 @@ def predict(file_obj):
     score = np.squeeze(predictions)
     return score
 
+# Create a file uploader
+uploaded_file = st.file_uploader('Upload an image', type=['jpg', 'jpeg', 'png'])
+
 # Check if a file has been uploaded
 if uploaded_file is not None:
     # Load the uploaded image
@@ -36,17 +42,35 @@ if uploaded_file is not None:
 
     # Make a prediction using your pre-trained model and predict function
     prediction = predict(uploaded_file)
-    predicted_class = class_names[np.argmax(prediction)]
     predicted_class_index = np.argmax(prediction)
+    predicted_class = class_names[predicted_class_index]
     predicted_probability = prediction[predicted_class_index]
 
     # Convert the image to a data URL
     buffered = BytesIO()
     image.save(buffered, format='JPEG')
-    image_data_url = base64.b64encode(buffered.getvalue()).decode()
+    uploaded_image_data_url = base64.b64encode(buffered.getvalue()).decode()
 
-    # Create an HTML table to display the image, its file name, and the classification result
+    # Load 10 random images from a local directory
+    image_dir = 'data\Flowers\Babi'
+    image_files = random.sample(os.listdir(image_dir), 10)
+    images_html = '<div style="display: flex; flex-wrap: wrap;">'
+    for image_file in image_files:
+        image_path = os.path.join(image_dir, image_file)
+        with open(image_path, 'rb') as f:
+            image_data_url = base64.b64encode(f.read()).decode()
+        images_html += f'<div style="flex: 1 0 25%;"><img src="data:image/jpeg;base64,{image_data_url}" style="margin: 8px; width: 100%;" /></div>'
+    images_html += '</div>'
+
+    # Create an HTML table to display the image, its file name, the classification result, and the random images
     table_html = f'''
+        <style>
+            table {{
+                background-color: white;
+                text-align: center;
+                vertical-align: middle;
+            }}
+        </style>
         <table>
             <tr>
                 <th>File Name</th>
@@ -54,14 +78,74 @@ if uploaded_file is not None:
             </tr>
             <tr>
                 <th>Image</th>
-                <td><img src="data:image/jpeg;base64,{image_data_url}" /></td>
+                <td><img src="data:image/jpeg;base64,{uploaded_image_data_url}" /></td>
             </tr>
             <tr>
                 <th>Classification</th>
                 <td>{predicted_class} ({predicted_probability:.2f})</td>
+            </tr>
+            <tr>
+                <th>Random Images</th>
+                <td>{images_html}</td>
             </tr>
         </table>
     '''
 
     # Display the table in Streamlit
     st.markdown(table_html, unsafe_allow_html=True)
+
+#CSS Style background for pages
+df = px.data.iris()
+
+@st.cache_data
+def get_img_as_base64(file):
+    with open(file, "rb") as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
+page_bg_img = f"""
+<style>
+[data-testid="stAppViewContainer"] > .main {{
+background-image: url("https://github.com/s3822042/flower-classification/blob/Zoe/Testing%20for%20Streamlit/bg.jpg?raw=true");
+background-size: 180%;
+background-position: top left;
+background-repeat: no-repeat;
+background-attachment: local;
+}}
+
+/*tittle page color*/
+span.css-10trblm.e16nr0p30 {{
+    color: #A61635;
+}}
+
+/*file name uploaded text color*/
+div.uploadedFileName.css-1uixxvy{{
+    color: white;
+}}
+
+div.css-10ix4kq {{
+    color: white;
+}}
+
+/*text color*/
+p{{
+  color: white;
+  font-weight: bold;
+}}
+
+div.block-container.css-1y4p8pa.egzxvld4{{
+    padding-right: 100px;
+    padding-top: 50px;
+    width: 100%;
+}}
+
+[data-testid="stHeader"] {{
+background: rgba(0,0,0,0);
+}}
+
+[data-testid="stToolbar"] {{
+right: 2rem;
+}}
+</style>
+"""
+st.markdown(page_bg_img, unsafe_allow_html=True)
