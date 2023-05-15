@@ -2,14 +2,15 @@ import streamlit as st
 from PIL import Image
 import numpy as np
 import joblib
-import pandas as pd
+import base64
+from io import BytesIO
 
-st.set_page_config(page_title="Flower Recognition", page_icon=":bouquet:", layout="wide")
+st.set_page_config(page_title="Flower Recognition", page_icon=":bouquet:")
 
 st.markdown("# Flower Recognition")
 
-# Create a file uploader component in Streamlit that accepts multiple image files
-uploaded_files = st.file_uploader("Choose your files...", type=["jpg","jpeg"], accept_multiple_files=True)
+# Create a file uploader component in Streamlit that accepts only one image file
+uploaded_file = st.file_uploader("Choose your file...", type=["jpg", "jpeg"])
 
 # Load the pre-trained model
 model = joblib.load('ResNet50V2_model_final.joblib')
@@ -18,10 +19,9 @@ model = joblib.load('ResNet50V2_model_final.joblib')
 class_names = ['Babi', 'Calimerio', 'Chrysanthemum', 'Hydrangeas', 'Lisianthus', 'Pingpong', 'Rosy', 'Tana']
 
 # Define the predict function
-# Define the predict function
 def predict(file_obj):
     img = Image.open(file_obj)
-    img = img.resize((256, 256))  # resize to (256, 256)
+    img = img.resize((256, 256))
     img_array = np.array(img)
     img_array = np.expand_dims(img_array, axis=0)
     img_array = img_array.astype('float32') / 255.0
@@ -29,35 +29,39 @@ def predict(file_obj):
     score = np.squeeze(predictions)
     return score
 
-# Display uploaded images
-if uploaded_files is not None:
-    st.write("Uploaded Images:")
-    row = st.empty()
-    num_cols = 4
-    num_rows = int(np.ceil(len(uploaded_files) / num_cols))
-    uploaded_images = []
-    for i in range(num_rows):
-        cols = row.columns(num_cols)
-        for j in range(num_cols):
-            index = i * num_cols + j
-            if index < len(uploaded_files):
-                file_obj = uploaded_files[index]
-                image = Image.open(file_obj)
-                filename = file_obj.name
-                image = image.resize((256, 256))
-                cols[j].image(image, caption=filename, use_column_width=True)
-                uploaded_images.append((file_obj, filename))
+# Check if a file has been uploaded
+if uploaded_file is not None:
+    # Load the uploaded image
+    image = Image.open(uploaded_file)
 
-    # Submit button for classification
-    if st.button("Submit"):
-        st.write("Results:")
-        data = []
-        for uploaded_image in uploaded_images:
-            file_obj, filename = uploaded_image
-            score = predict(file_obj)
-            prediction = f"These flowers are likely {class_names[np.argmax(score)]} with a {100 * np.max(score)}% confidence."
-            data.append([filename, prediction])
+    # Make a prediction using your pre-trained model and predict function
+    prediction = predict(uploaded_file)
+    predicted_class = class_names[np.argmax(prediction)]
+    predicted_class_index = np.argmax(prediction)
+    predicted_probability = prediction[predicted_class_index]
 
-        # Show new results in table
-        df = pd.DataFrame(data, columns=['File Name', 'Result'])
-        st.table(df)
+    # Convert the image to a data URL
+    buffered = BytesIO()
+    image.save(buffered, format='JPEG')
+    image_data_url = base64.b64encode(buffered.getvalue()).decode()
+
+    # Create an HTML table to display the image, its file name, and the classification result
+    table_html = f'''
+        <table>
+            <tr>
+                <th>File Name</th>
+                <td>{uploaded_file.name}</td>
+            </tr>
+            <tr>
+                <th>Image</th>
+                <td><img src="data:image/jpeg;base64,{image_data_url}" /></td>
+            </tr>
+            <tr>
+                <th>Classification</th>
+                <td>{predicted_class} ({predicted_probability:.2f})</td>
+            </tr>
+        </table>
+    '''
+
+    # Display the table in Streamlit
+    st.markdown(table_html, unsafe_allow_html=True)
