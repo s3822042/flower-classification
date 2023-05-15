@@ -127,7 +127,7 @@ div.css-10ix4kq {{
     color: white;
 }}
 
-small.css-laehpvj{{
+small.css-1aehpvj{{
     color: white;
 }}
 
