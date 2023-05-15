@@ -33,23 +33,28 @@ def predict(file_obj):
     return score
 
 # Create a file uploader
-uploaded_file = st.file_uploader('Upload an image', type=['jpg', 'jpeg', 'png'])
+uploaded_file = st.file_uploader('Upload an image', type=['jpg', 'jpeg'])
 
 # Check if a file has been uploaded
 if uploaded_file is not None:
     # Load the uploaded image
     image = Image.open(uploaded_file)
 
-    # Make a prediction using your pre-trained model and predict function
-    prediction = predict(uploaded_file)
-    predicted_class_index = np.argmax(prediction)
-    predicted_class = class_names[predicted_class_index]
-    predicted_probability = prediction[predicted_class_index]
+    # Resize the image if its width or height is greater than 500 pixels
+    max_size = 500
+    if image.width > max_size or image.height > max_size:
+        image.thumbnail((max_size, max_size))
 
     # Convert the image to a data URL
     buffered = BytesIO()
     image.save(buffered, format='JPEG')
     uploaded_image_data_url = base64.b64encode(buffered.getvalue()).decode()
+
+    # Make a prediction using your pre-trained model and predict function
+    prediction = predict(uploaded_file)
+    predicted_class_index = np.argmax(prediction)
+    predicted_class = class_names[predicted_class_index]
+    predicted_probability = prediction[predicted_class_index]
 
     # Load 10 random images from a local directory
     image_dir = 'data\Flowers\Babi'
