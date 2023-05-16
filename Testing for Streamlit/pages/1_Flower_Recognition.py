@@ -133,7 +133,7 @@ div.css-10ix4kq {{
 }}
 
 small.css-1aehpvj{{
-    color: white;
+    color: #ff7a7a;
 }}
 
 /*text color*/
