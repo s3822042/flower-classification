@@ -10,8 +10,6 @@ import os
 import random
 
 st.set_page_config(page_title="Flower Recognition", page_icon=":bouquet:")
-st.markdown('<link href="styles.css" rel="stylesheet">', unsafe_allow_html=True)
-
 
 st.markdown("# Flower Recognition")
 
@@ -57,7 +55,7 @@ if uploaded_file is not None:
     predicted_probability = prediction[predicted_class_index]
 
     # Load 10 random images from a local directory
-    image_dir = 'data\Flowers\Babi'
+    image_dir = f'data/Flowers/{predicted_class}'
     image_files = random.sample(os.listdir(image_dir), 10)
     images_html = '<div style="display: flex; flex-wrap: wrap;">'
     for image_file in image_files:
@@ -100,14 +98,6 @@ if uploaded_file is not None:
     st.markdown(table_html, unsafe_allow_html=True)
 
 #CSS Style background for pages
-df = px.data.iris()
-
-@st.cache_data
-def get_img_as_base64(file):
-    with open(file, "rb") as f:
-        data = f.read()
-    return base64.b64encode(data).decode()
-
 page_bg_img = f"""
 <style>
 [data-testid="stAppViewContainer"] > .main {{
@@ -148,6 +138,23 @@ div.block-container.css-1y4p8pa.egzxvld4{{
     width: 100%;
 }}
 
+div.css-4u6e0b {{
+    background-color: rgba(0, 0, 0, 0.5);
+}}
+
+ul.css-lrlib {{
+    background-color: #272525;
+}}
+
+section.css-vjj2ce {{
+    background-color: #BE3838;
+    color: rgb(49, 51, 63);
+}}
+
+span.css-9ycgxx {{
+    color:white;
+}}
+
 [data-testid="stHeader"] {{
 background: rgba(0,0,0,0);
 }}
@@ -155,6 +162,20 @@ background: rgba(0,0,0,0);
 [data-testid="stToolbar"] {{
 right: 2rem;
 }}
+
+[data-testid=stSidebar] {{
+    background-color: #B13746;
+}}
+
+div.css-j7qwjs {{
+    background-color: #BDBBBB;
+}}
+
 </style>
 """
 st.markdown(page_bg_img, unsafe_allow_html=True)
+
+
+
+
+
