@@ -12,6 +12,7 @@ from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras import backend as K
 from tensorflow.keras.models import load_model
+import time
 
 def recall_cnn(y_true, y_pred):
     true_positives = np.sum(np.round(np.clip(y_true * y_pred, 0, 1)))
@@ -56,7 +57,7 @@ def recommend_similar_images(image, num_images=12):
 
     # Calculate cosine similarities between the uploaded image and all the images in the dataset
     similarities = []
-    folder_path = os.path.join('data', 'All type flowers')
+    folder_path = os.path.join('data', 'Babi')
     for file_name in os.listdir(folder_path):
         if file_name.endswith('.jpg'):
             image_path_i = os.path.join(folder_path, file_name)
@@ -85,6 +86,12 @@ st.markdown("# Flower Recommendation")
 
 # Create a file uploader component in Streamlit
 uploaded_file = st.file_uploader('Upload an image', type=['jpg', 'jpeg'])
+
+progress_text = "The system is running. Please wait."
+my_bar = st.progress(0, text=progress_text)
+for percent_complete in range(100):
+    time.sleep(0.1)
+    my_bar.progress(percent_complete + 1, text=progress_text)
 
 # Check if a file has been uploaded
 if uploaded_file is not None:
