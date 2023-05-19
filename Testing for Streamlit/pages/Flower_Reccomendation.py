@@ -7,11 +7,8 @@ from io import BytesIO
 import joblib
 from sklearn.metrics.pairwise import cosine_similarity
 import tensorflow as tf
-from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras import backend as K
-from tensorflow.keras.models import load_model
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Flatten
 import time
 
 def recall_cnn(y_true, y_pred):
@@ -35,10 +32,10 @@ METRICS = ["accuracy", recall_cnn, precision_cnn, f1_cnn]
 
 def recommend_similar_images(image, num_images=12):
     # Define the input shape expected by the model
-    input_shape = (224, 224)
+    input_shape = (256, 256, 3)
 
     # Resize the uploaded image to match the input shape expected by the model
-    image_resized = image.resize(input_shape)
+    image_resized = image.resize(input_shape[:2])
 
     # Convert the resized image to an array
     img_array_resized = np.array(image_resized)
@@ -46,11 +43,11 @@ def recommend_similar_images(image, num_images=12):
     # Normalize the image
     img_array_resized = img_array_resized.astype('float32') / 255.0
 
-    # Load the pre-trained model using joblib
-    VGG16_model = joblib.load('VGG16_model.joblib')
+    # Load the pre-trained model
+    VGG16_model = tf.keras.applications.VGG16(weights='imagenet', include_top=False, input_shape=input_shape)
 
     # Create a new model that outputs the desired layer's activations
-    intermediate_layer_model = Model(inputs=VGG16_model.input, outputs=VGG16_model.get_layer('flatten').output)
+    intermediate_layer_model = Model(inputs=VGG16_model.input, outputs=Flatten()(VGG16_model.output))
 
     # Extract the feature vector of the uploaded image
     features = intermediate_layer_model.predict(np.expand_dims(img_array_resized, axis=0))
@@ -61,7 +58,7 @@ def recommend_similar_images(image, num_images=12):
     for file_name in os.listdir(folder_path):
         if file_name.endswith('.jpg'):
             image_path_i = os.path.join(folder_path, file_name)
-            img_i = Image.open(image_path_i).resize(input_shape)
+            img_i = Image.open(image_path_i).resize(input_shape[:2])
             x_i = np.array(img_i)
             x_i = np.expand_dims(x_i, axis=0)
             x_i = tf.keras.applications.vgg16.preprocess_input(x_i)
@@ -113,18 +110,18 @@ if uploaded_file is not None:
     <style>
         table {{
             background-color: white;
-        text-align: center;
-        vertical-align: middle;
+            text-align: center;
+            vertical-align: middle;
         }}
     </style>
     <table>
         <tr>
             <th>File Name</th>
-                <td>{uploaded_file.name}</td>
+            <td>{uploaded_file.name}</td>
         </tr>
         <tr>
             <th>Image</th>
-                <td><img src="data:image/jpeg;base64,{uploaded_image_data_url}" /></td>
+            <td><img src="data:image/jpeg;base64,{uploaded_image_data_url}" /></td>
         </tr>
     </table>
     '''
@@ -136,7 +133,7 @@ if uploaded_file is not None:
     similar_images = recommend_similar_images(image)
 
     st.write('The flower you are looking for:')
-    
+
     cols_per_row = 4
     image_size = (350, 350)  # Fixed size for recommendation images
 
@@ -154,7 +151,7 @@ if uploaded_file is not None:
                         use_column_width=True
                     )
                     cols[j].markdown(f'<div style="text-align:center"><a href="{similar_image_data_url}" title="{title_text}">{flower_name}</a></div>', unsafe_allow_html=True)
-#CSS Style background for pages
+
 page_bg_img = f"""
 <style>
 [data-testid="stAppViewContainer"] > .main {{
@@ -236,6 +233,11 @@ img {{
 
 img:hover {{
     transform: scale(1.1);
+}}
+
+.css-5rimss a {{
+    color: rgb(64 18 192);
+    background-color: bisque;
 }}
 
 </style>
