@@ -57,7 +57,7 @@ def recommend_similar_images(image, num_images=12):
 
     # Calculate cosine similarities between the uploaded image and all the images in the dataset
     similarities = []
-    folder_path = os.path.join('data', 'Babi')
+    folder_path = os.path.join('data', 'All type flowers')
     for file_name in os.listdir(folder_path):
         if file_name.endswith('.jpg'):
             image_path_i = os.path.join(folder_path, file_name)
