@@ -1,7 +1,7 @@
 import streamlit as st
 from PIL import Image
 import numpy as np
-import joblib
+import tensorflow as tf
 import base64
 from io import BytesIO
 import plotly.express as px
@@ -14,7 +14,7 @@ st.set_page_config(page_title="Flower Recognition", page_icon=":bouquet:")
 st.markdown("# Flower Recognition")
 
 # Load the pre-trained model
-model = joblib.load('ResNet50V2_model_final.joblib')
+model = tf.keras.models.load_model('ResNet50V2_model.h5')
 
 # Define the classes
 class_names = ['Babi', 'Calimerio', 'Chrysanthemum', 'Hydrangeas', 'Lisianthus', 'Pingpong', 'Rosy', 'Tana']
