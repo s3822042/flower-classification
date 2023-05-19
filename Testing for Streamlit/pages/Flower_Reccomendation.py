@@ -5,10 +5,8 @@ import os
 import base64
 from io import BytesIO
 import joblib
-import re
 from sklearn.metrics.pairwise import cosine_similarity
 import tensorflow as tf
-from tensorflow.keras.models import Model
 from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -34,8 +32,7 @@ def f1_cnn(y_true, y_pred):
 
 METRICS = ["accuracy", recall_cnn, precision_cnn, f1_cnn]
 
-
-def recommend_similar_images(image, num_images=10):
+def recommend_similar_images(image, num_images=12):
     # Define the input shape expected by the model
     input_shape = (224, 224)
 
@@ -77,8 +74,7 @@ def recommend_similar_images(image, num_images=10):
     # Extract the similar images for display
     similar_images = []
     for image_path, similarity in similarities:
-        flower_name = os.path.basename(image_path).split('.')[0].rstrip('0123456789')
-        similar_images.append((image_path, flower_name, similarity))
+        similar_images.append((image_path, similarity))
 
     return similar_images
 
@@ -105,17 +101,14 @@ if uploaded_file is not None:
     image.save(buffered, format='JPEG')
     uploaded_image_data_url = base64.b64encode(buffered.getvalue()).decode()
 
-    # Get similar images based on the uploaded image using the pre-trained VGG16 model
-    similar_images = recommend_similar_images(image)
-
     # Create an HTML table to display:
     table_html = f'''
     <style>
         table {{
-        background-color: white;
+            background-color: white;
         text-align: center;
         vertical-align: middle;
-    }}
+        }}
     </style>
     <table>
         <tr>
@@ -126,24 +119,34 @@ if uploaded_file is not None:
             <th>Image</th>
                 <td><img src="data:image/jpeg;base64,{uploaded_image_data_url}" /></td>
         </tr>
-        <tr>
-            <th>Similar Images</th>
-            <td>
-                '''
-
-    for similar_image_path, flower_name, similarity in similar_images:
-        similar_image = Image.open(similar_image_path)
-        table_html += f'<img src="{similar_image_path}" /><br>Name: {flower_name}<br>Similarity: {similarity:.2f}<br><br>'
-
-    table_html += '''
-            </td>
-        </tr>
     </table>
     '''
+
     # Display the table in Streamlit
     st.markdown(table_html, unsafe_allow_html=True)
 
+    # Get similar images based on the uploaded image using the pre-trained VGG16 model
+    similar_images = recommend_similar_images(image)
 
+    st.write('The flower you are looking for:')
+    
+    cols_per_row = 4
+    image_size = (350, 350)  # Fixed size for recommendation images
+
+    for i in range(0, len(similar_images), cols_per_row):
+        cols = st.columns(cols_per_row)
+        for j in range(cols_per_row):
+            if i + j < len(similar_images):
+                similar_image_path, similarity = similar_images[i + j]
+                with open(similar_image_path, 'rb') as f:
+                    similar_image_data_url = base64.b64encode(f.read()).decode()
+                    flower_name = os.path.basename(similar_image_path).split('_')[0].capitalize()
+                    title_text = f'Flower: {flower_name}\nSimilarity: {similarity:.2f}'
+                    cols[j].image(
+                        Image.open(similar_image_path).resize(image_size),
+                        use_column_width=True
+                    )
+                    cols[j].markdown(f'<div style="text-align:center"><a href="{similar_image_data_url}" title="{title_text}">{flower_name}</a></div>', unsafe_allow_html=True)
 #CSS Style background for pages
 page_bg_img = f"""
 <style>
@@ -203,7 +206,7 @@ span.css-9ycgxx {{
 }}
 
 [data-testid="stHeader"] {{
-background: rgba(0,0,0,0);
+    background: rgba(0,0,0,0);
 }}
 
 [data-testid="stToolbar"] {{
@@ -216,6 +219,16 @@ right: 2rem;
 
 div.css-j7qwjs {{
     background-color: #BDBBBB;
+}}
+
+/*image*/
+img {{
+    cursor: pointer;
+    transition: all .2s ease-in-out;
+}}
+
+img:hover {{
+    transform: scale(1.1);
 }}
 
 </style>
